@@ -1,4 +1,4 @@
-name: Nuclei Scan
+name: Nuclei Scan Workflow
 
 on:
   push:
@@ -7,38 +7,39 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual trigger of the workflow
 
 jobs:
   nuclei-scan:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the code
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    # Step 2: Install Nuclei
-    - name: Install Nuclei
-      run: |
-        curl -sSfL https://github.com/projectdiscovery/nuclei/main/install.sh | sh
-        # https://raw.githubusercontent.com/projectdiscovery/nuclei/main/install.sh | sh
-        sudo mv nuclei /usr/local/bin/
+      # Step 2: Install Go and Nuclei
+      - name: Install Go and Nuclei
+        run: |
+          sudo apt update
+          sudo apt install -y golang
+          go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 
-    # Step 3: Fetch Nuclei Templates
-    - name: Download Nuclei Templates
-      run: |
-        nuclei -ut
+      # Step 3: Set up Nuclei templates
+      - name: Download Nuclei Templates
+        run: nuclei -update-templates
 
-    # Step 4: Run Nuclei Scan
-    - name: Run Nuclei Scan
-      run: |
-        # Replace 'TARGET_URL' with the actual target or an environment variable
-        nuclei -u https://anteraja.id/id/ -t nuclei-templates/ -o nuclei-results.txt
+      # Step 4: Run Nuclei scan
+      - name: Run Nuclei Scan
+        env:
+          TARGET_URL: ${{ secrets.TARGET_URL }} # Securely store your target URL in GitHub Secrets
+        run: |
+          echo "Scanning $TARGET_URL..."
+          nuclei -u $TARGET_URL -t nuclei-templates/ -o nuclei-results.txt
 
-    # Step 5: Upload Scan Results
-    - name: Upload Scan Results
-      uses: actions/upload-artifact@v3
-      with:
-        name: nuclei-results
-        path: nuclei-results.txt
+      # Step 5: Upload scan results
+      - name: Upload Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Nuclei Scan Results
+          path: nuclei-results.txt
