@@ -32,7 +32,7 @@ jobs:
       # Step 4: Run Nuclei scan
       - name: Run Nuclei Scan
         env:
-          TARGET_URL: ${{ secrets.TARGET_URL }} # Securely store your target URL in GitHub Secrets
+          TARGET_URL: ${{ secrets.https://anteraja.id/id/ }} # Securely store your target URL in GitHub Secrets
         run: |
           echo "Scanning $TARGET_URL..."
           nuclei -u $TARGET_URL -t nuclei-templates/ -o nuclei-results.txt
