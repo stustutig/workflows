@@ -33,7 +33,7 @@ jobs:
     - name: Run Nuclei Scan
       run: |
         # Replace 'TARGET_URL' with the actual target or an environment variable
-        nuclei -u TARGET_URL -t nuclei-templates/ -o nuclei-results.txt
+        nuclei -u https://anteraja.id/id/ -t nuclei-templates/ -o nuclei-results.txt
 
     # Step 5: Upload Scan Results
     - name: Upload Scan Results
