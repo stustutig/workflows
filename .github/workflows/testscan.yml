@@ -21,7 +21,8 @@ jobs:
     # Step 2: Install Nuclei
     - name: Install Nuclei
       run: |
-        curl -sSfL https://raw.githubusercontent.com/projectdiscovery/nuclei/main/install.sh | sh
+        curl -sSfL https://github.com/projectdiscovery/nuclei/main/install.sh | sh
+        # https://raw.githubusercontent.com/projectdiscovery/nuclei/main/install.sh | sh
         sudo mv nuclei /usr/local/bin/
 
     # Step 3: Fetch Nuclei Templates
